@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CueCanvas · See the whole show</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span class="logo" aria-hidden="true">▶</span>CueCanvas
+      </div>
+      <span class="pill">LOCAL REHEARSAL WORKSPACE</span>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <p class="kicker">A clear cue. A confident next step.</p>
+          <h1>See the whole show.</h1>
+          <p class="sub">
+            Build a multi-track rundown, find timing overlaps, and walk through
+            a rehearsal with every cue in view.
+          </p>
+        </div>
+        <div class="row">
+          <button id="sample">New sample show</button
+          ><button id="save" class="primary">Save show</button>
+        </div>
+      </div>
+      <div id="error" class="notice error" role="alert" hidden></div>
+      <div id="status" class="notice" role="status" hidden></div>
+      <div class="app">
+        <aside>
+          <section class="card stack">
+            <h2>Show settings</h2>
+            <label>Show name<input id="title" maxlength="120" /></label>
+            <div id="tracks" class="stack"></div>
+            <button id="add-track">+ Add track</button
+            ><span id="revision" class="muted">Unsaved sample</span>
+            <p class="note">
+              Timing is relative to the start of rehearsal. Overlaps on the same
+              track are highlighted for review, not automatically prohibited.
+            </p>
+          </section>
+          <section class="card stack">
+            <h2>Show library</h2>
+            <label
+              >Saved shows<select id="library">
+                <option value="">Select a show</option>
+              </select></label
+            ><button id="open">Open show</button
+            ><label
+              >Import show JSON<input
+                id="import"
+                type="file"
+                accept=".json" /></label
+            ><button id="json">Export show JSON</button
+            ><button id="csv">Export rundown CSV</button>
+          </section>
+        </aside>
+        <div>
+          <div class="metrics">
+            <div class="metric">
+              <strong id="cue-count">0</strong><span>Cues in the show</span>
+            </div>
+            <div class="metric">
+              <strong id="track-count">0</strong><span>Production tracks</span>
+            </div>
+            <div class="metric">
+              <strong id="duration">00:00</strong><span>Total timeline</span>
+            </div>
+            <div class="metric">
+              <strong id="conflict-count">0</strong
+              ><span>Overlaps to review</span>
+            </div>
+          </div>
+          <section class="card">
+            <div class="heading">
+              <h2>01 / Timeline</h2>
+              <div class="row">
+                <label
+                  >Zoom<select id="zoom">
+                    <option value="1">Fit view</option>
+                    <option value="2">2× detail</option>
+                    <option value="4">4× detail</option>
+                  </select></label
+                ><button id="undo" disabled>Undo</button
+                ><button id="redo" disabled>Redo</button>
+              </div>
+            </div>
+            <div
+              id="timeline"
+              class="canvas"
+              tabindex="0"
+              role="region"
+              aria-label="Cue timeline, scroll horizontally"
+            ></div>
+            <p class="muted">
+              Select a cue to edit it. Scroll horizontally on narrow screens;
+              keyboard users can focus the timeline and use arrow keys.
+            </p>
+            <div id="conflicts" class="list"></div>
+          </section>
+          <section class="card">
+            <div class="heading">
+              <h2>02 / Cue editor</h2>
+              <button id="add-cue">+ Add cue</button>
+            </div>
+            <div id="editor" class="stack">
+              <div class="grid2">
+                <label>Cue title<input id="cue-title" maxlength="120" /></label
+                ><label>Track<select id="cue-track"></select></label>
+              </div>
+              <div class="grid2">
+                <label
+                  >Start · seconds<input
+                    id="cue-start"
+                    type="number"
+                    min="0"
+                    max="86399" /></label
+                ><label
+                  >Duration · seconds<input
+                    id="cue-duration"
+                    type="number"
+                    min="1"
+                    max="3600"
+                /></label>
+              </div>
+              <label
+                >Rehearsal note<textarea
+                  id="cue-note"
+                  rows="2"
+                  maxlength="1000"
+                ></textarea>
+              </label>
+              <div class="row">
+                <button id="apply" class="primary">Apply cue changes</button
+                ><button id="discard-cue">Discard cue edits</button
+                ><button id="duplicate">Duplicate cue</button
+                ><button id="remove">Remove cue</button>
+              </div>
+            </div>
+            <p id="editor-empty" class="empty" hidden>
+              Select a cue or add one to start editing.
+            </p>
+          </section>
+          <section class="card timer-panel">
+            <div class="heading">
+              <h2>03 / Rehearsal desk</h2>
+              <span id="mode" class="pill">Stopped</span>
+            </div>
+            <div class="timer" id="clock" role="timer">00:00</div>
+            <p id="next-cue" class="rehearsal-name">Ready when you are.</p>
+            <p id="active-cues" class="muted"></p>
+            <div class="row">
+              <button id="start">Start</button
+              ><button id="pause" disabled>Pause</button
+              ><button id="reset">Reset clock</button
+              ><button id="advance">Jump to next cue</button>
+            </div>
+            <p class="muted">
+              A planning clock only. No lights, sound systems, or stage
+              equipment are controlled. Editing timing resets the rehearsal.
+            </p>
+          </section>
+          <section class="card">
+            <div class="heading">
+              <h2>Complete rundown</h2>
+              <label
+                >Filter track<select id="filter">
+                  <option value="all">All tracks</option>
+                </select></label
+              >
+            </div>
+            <div class="scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cue</th>
+                    <th>Track</th>
+                    <th>Start</th>
+                    <th>Duration</th>
+                    <th>Select</th>
+                  </tr>
+                </thead>
+                <tbody id="rundown"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+      <footer>
+        CueCanvas · Go backend · Local show files · Fictional demo content, no
+        attendee or performer records.
+      </footer>
+    </main>
+  </body>
+</html>

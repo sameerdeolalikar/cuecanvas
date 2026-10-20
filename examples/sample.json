@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "title": "The Lantern Room · rehearsal",
+  "tracks": [
+    {
+      "id": "lights",
+      "name": "Lighting"
+    },
+    {
+      "id": "sound",
+      "name": "Sound"
+    },
+    {
+      "id": "stage",
+      "name": "Stage"
+    }
+  ],
+  "cues": [
+    {
+      "id": "house",
+      "title": "House to half",
+      "track": "lights",
+      "start": 0,
+      "duration": 20,
+      "note": "Opening atmosphere. Fictional rehearsal."
+    },
+    {
+      "id": "intro",
+      "title": "Opening ambience",
+      "track": "sound",
+      "start": 10,
+      "duration": 65,
+      "note": "Gentle fade into the opening."
+    },
+    {
+      "id": "wash",
+      "title": "Warm stage wash",
+      "track": "lights",
+      "start": 15,
+      "duration": 35,
+      "note": "Review the intentional 5-second overlap."
+    },
+    {
+      "id": "entrance",
+      "title": "First entrance",
+      "track": "stage",
+      "start": 35,
+      "duration": 20,
+      "note": "Walk through the entrance timing."
+    },
+    {
+      "id": "shift",
+      "title": "Scene transition",
+      "track": "stage",
+      "start": 100,
+      "duration": 30,
+      "note": "Reset the fictional set."
+    },
+    {
+      "id": "sting",
+      "title": "Transition accent",
+      "track": "sound",
+      "start": 105,
+      "duration": 12,
+      "note": ""
+    }
+  ]
+}
